@@ -1,0 +1,87 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: sans-serif;
+    background: #222;
+    color: white;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#title {
+    margin-top: 20px;
+    font-size: 32px;
+    color: #00ff99;
+    text-align: center;
+}
+
+canvas {
+    border: 1px solid white;
+    margin-top: 20px;
+}
+
+#generationDisplay {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #00ff99;
+  background-color: #222;
+  border: 1px solid #00ff99;
+  padding: 8px 16px;
+  border-radius: 5px;
+  text-align: center;
+  width: fit-content;
+  min-width: 160px;
+  box-shadow: 0 0 10px #00ff9960;
+}
+
+button {
+    background-color: #333;
+    color: #00ff99;
+    border: 1px solid #00ff99;
+    padding: 10px 0;
+    width: 100px;
+    margin: 5px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+    background-color: #00ff99;
+    color: #111;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+#footer {
+    margin-top: 40px;
+    padding: 15px;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+    background-color: #222;
+    border-top: 1px solid #333;
+    width: 100%;
+}
+
+#footer a {
+    color: #00ff99;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#footer a:hover {
+    text-decoration: underline;
+}
+
