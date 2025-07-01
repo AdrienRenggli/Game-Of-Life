@@ -5,10 +5,24 @@ const speedBtn = document.getElementById("speedBtn");
 const randomBtn = document.getElementById("randomBtn");
 const resetBtn = document.getElementById("resetBtn");
 const stepBtn = document.getElementById("stepBtn");
+const toggleTorusBtn = document.getElementById("toggleTorusBtn");
 
 const generationDisplay = document.getElementById("generationDisplay");
 let generation = 0;
 
+let torusMode = false;
+
+const presets = {
+    glider: [
+        [0, 1, 0],
+        [0, 0, 1],
+        [1, 1, 1],
+    ],
+    blinker: [
+        [1, 1, 1],
+    ],
+    // Add more patterns here
+};
 
 const rows = 60;
 const cols = 60;
@@ -49,24 +63,33 @@ function nextGeneration() {
     const newGrid = createGrid(rows, cols);
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
-        let neighbors = 0;
-        for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-                if (dx === 0 && dy === 0) continue;
-                const nx = x + dx;
-                const ny = y + dy;
-                if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
-                    neighbors += grid[ny][nx];
+            let neighbors = 0;
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    if (dx === 0 && dy === 0) continue;
+                    let nx = x + dx;
+                    let ny = y + dy;
+
+                    if (torusMode) {
+                        nx = (nx + cols) % cols;
+                        ny = (ny + rows) % rows;
+                        neighbors += grid[ny][nx];
+                    } else {
+                        if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+                            neighbors += grid[ny][nx];
+                        }
+                    }
                 }
             }
-        }
-        if (grid[y][x] === 1) {
-            newGrid[y][x] = neighbors === 2 || neighbors === 3 ? 1 : 0;
-        } else {
-            newGrid[y][x] = neighbors === 3 ? 1 : 0;
-        }
+
+            if (grid[y][x] === 1) {
+                newGrid[y][x] = neighbors === 2 || neighbors === 3 ? 1 : 0;
+            } else {
+                newGrid[y][x] = neighbors === 3 ? 1 : 0;
+            }
         }
     }
+
     grid = newGrid;
     generation++;
     generationDisplay.textContent = `Generation: ${generation}`;
@@ -76,6 +99,27 @@ function nextGeneration() {
 function startGame() {
     if (interval) clearInterval(interval);
     interval = setInterval(nextGeneration, 500 / speed);
+}
+
+function loadPattern(pattern) {
+    const patRows = pattern.length;
+    const patCols = pattern[0].length;
+    const offsetY = Math.floor((rows - patRows) / 2);
+    const offsetX = Math.floor((cols - patCols) / 2);
+
+    // Clear grid first
+    grid = createGrid(rows, cols);
+
+    // Copy pattern into grid
+    for (let y = 0; y < patRows; y++) {
+        for (let x = 0; x < patCols; x++) {
+            grid[offsetY + y][offsetX + x] = pattern[y][x];
+        }
+    }
+
+    generation = 0;
+    generationDisplay.textContent = `Generation: ${generation}`;
+    drawGrid();
 }
 
 playPauseBtn.addEventListener("click", () => {
@@ -95,7 +139,6 @@ speedBtn.addEventListener("click", () => {
 });
 
 randomBtn.addEventListener("click", () => {
-    if (isPlaying) return; // Only randomize while paused
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
             grid[y][x] = Math.random() > 0.7 ? 1 : 0; // ~30% alive
@@ -107,7 +150,6 @@ randomBtn.addEventListener("click", () => {
 });
 
 resetBtn.addEventListener("click", () => {
-    if (isPlaying) return; // Only reset while paused
     grid = createGrid(rows, cols);
     generation = 0;
     generationDisplay.textContent = `Generation: ${generation}`;
@@ -119,6 +161,12 @@ stepBtn.addEventListener("click", () => {
         nextGeneration();
     }
 });
+
+toggleTorusBtn.addEventListener("click", () => {
+    torusMode = !torusMode;
+    toggleTorusBtn.textContent = `Torus: ${torusMode ? "On" : "Off"}`;
+});
+
 
 document.addEventListener("keydown", (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -145,6 +193,11 @@ document.addEventListener("keydown", (e) => {
             speedBtn.click();
             break;
     }
+});
+
+document.getElementById("presetSelector").addEventListener("change", (e) => {
+    const pattern = presets[e.target.value];
+    if (pattern) loadPattern(pattern);
 });
 
 drawGrid();
