@@ -8,6 +8,9 @@
 - Play, pause, and control simulation speed (1x, 2x, 4x).
 - Step forward one generation while paused.
 - Randomize the grid or reset it to empty.
+- Load preset patterns (e.g., **Glider**, **Blinker**) using a dropdown menu.
+- Toggle between **classic** and **torus (wrap-around)** map modes.
+- Choose custom grid sizes.
 - Generation counter updates live.
 - Keyboard shortcuts:
   - **Space**: Play/Pause toggle
