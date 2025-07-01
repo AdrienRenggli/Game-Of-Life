@@ -6,6 +6,8 @@ const randomBtn = document.getElementById("randomBtn");
 const resetBtn = document.getElementById("resetBtn");
 const stepBtn = document.getElementById("stepBtn");
 const toggleTorusBtn = document.getElementById("toggleTorusBtn");
+const input = document.getElementById("input");
+const applyGridSizeBtn = document.getElementById("applyGridSizeBtn");
 
 const generationDisplay = document.getElementById("generationDisplay");
 let generation = 0;
@@ -119,8 +121,9 @@ const presets = {
     // Add more patterns here
 };
 
-const rows = 60;
-const cols = 60;
+let rows = 60;
+let cols = 60;
+
 const cellSize = 10;
 let grid = createGrid(rows, cols);
 let isPlaying = false;
@@ -293,6 +296,26 @@ document.addEventListener("keydown", (e) => {
 document.getElementById("presetSelector").addEventListener("change", (e) => {
     const pattern = presets[e.target.value];
     if (pattern) loadPattern(pattern);
+});
+
+applyGridSizeBtn.addEventListener("click", () => {
+    const inputSize = parseInt(input.value);
+
+    if (isNaN(inputSize) || inputSize < 10 || inputSize > 100) {
+        alert("Grid size must be between 10 and 100.");
+        return;
+    }
+
+    rows = inputSize;
+    cols = inputSize;
+
+    canvas.width = cols * cellSize;
+    canvas.height = rows * cellSize;
+
+    grid = createGrid(rows, cols);
+    generation = 0;
+    generationDisplay.textContent = `Generation: ${generation}`;
+    drawGrid();
 });
 
 drawGrid();
